@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Start</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "collection/reset.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "collection/style.css" %}" />
+</head>
+
+<body id="select-participant">
+  <h1>Select a Participant's Data to Download</h1>
+  <div class="participant-list">
+    {% if participants %}
+      {% for pid in participants %}
+      <a href="#" class="button">Participant {{ pid }}</a>
+      {% endfor %}
+    {% else %}
+      No participants have data yet
+    {% endif %}
+  </div>
+</body>
+
+</html>

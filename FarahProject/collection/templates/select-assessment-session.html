@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Start</title>
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  {% load static %}
+  <link rel="stylesheet" type="text/css" href="{% static "collection/reset.css" %}" />
+  <link rel="stylesheet" type="text/css" href="{% static "collection/style.css" %}" />
+</head>
+
+<body id="select-assessment-session">
+  <h1>Let's get started with Participant 2A5</h1>
+  <form>
+    <div class="row">
+      <div class="col">
+        <h2 class="label">
+          Select Assessment Type
+        </h2>
+        <select>
+          <option value="paired">Paired Stimulus</option>
+          <option value="conjugate">Conjugate Preference Assessment</option>
+        </select>
+      </div>
+      <div class="col">
+        <h2 class="label">
+          Select Session Number
+        </h2>
+        <select>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+        </select>
+      </div>
+    </div>
+    <input type="submit" value="Start" class="button">
+  </form>
+</body>
+
+</html>

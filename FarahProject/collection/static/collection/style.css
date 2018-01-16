@@ -1,0 +1,141 @@
+html, body {
+  height: 100%; }
+
+body {
+  font-family: "Open Sans", sans-serif; }
+
+.button {
+  background-color: #993685;
+  color: white;
+  border: 3px solid #993685;
+  font-size: 24px;
+  text-decoration: none;
+  padding: 8px 24px;
+  border-radius: 3px;
+  transition: .3s all ease-in-out; }
+  .button:hover {
+    background-color: white;
+    color: #993685; }
+
+h1 {
+  font-size: 36px;
+  line-height: 48px; }
+
+#start {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  #start .options .button:first-child {
+    margin-right: 50px; }
+
+#select-participant {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; }
+  #select-participant h1 {
+    margin-bottom: 18px; }
+  #select-participant .participant-list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    max-width: 600px; }
+    #select-participant .participant-list .button {
+      margin-bottom: 24px; }
+      #select-participant .participant-list .button:nth-of-type(odd) {
+        margin-right: 24px; }
+
+#start-session {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; }
+  #start-session h1 {
+    margin-bottom: 60px; }
+  #start-session form {
+    display: flex;
+    flex-direction: column;
+    align-items: center; }
+    #start-session form .row {
+      display: flex;
+      margin-bottom: 36px;
+      align-items: center; }
+      #start-session form .row label {
+        font-size: 24px;
+        margin-right: 10px; }
+    #start-session form input[type="text"] {
+      border: 3px solid #993685;
+      font-size: 24px;
+      padding: 8px 10px;
+      border-radius: 3px; }
+    #start-session form input[type="submit"] {
+      width: 100px; }
+      #start-session form input[type="submit"]:hover {
+        cursor: pointer; }
+
+#select-assessment-session {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; }
+  #select-assessment-session h1 {
+    margin-bottom: 60px; }
+  #select-assessment-session form {
+    display: flex;
+    align-items: center;
+    flex-direction: column; }
+    #select-assessment-session form .row {
+      display: flex;
+      margin-bottom: 36px; }
+      #select-assessment-session form .row .col {
+        display: flex;
+        flex-direction: column;
+        width: 50%; }
+        #select-assessment-session form .row .col:first-child {
+          margin-right: 48px; }
+        #select-assessment-session form .row .col .label {
+          font-size: 24px;
+          margin-bottom: 8px; }
+        #select-assessment-session form .row .col select {
+          font-size: 16px;
+          padding: 8px 10px;
+          border-radius: 3px; }
+
+#paired-stimulus {
+  display: flex;
+  align-items: center;
+  justify-content: center; }
+  #paired-stimulus .left, #paired-stimulus .right {
+    width: 50vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center; }
+  #paired-stimulus .left {
+    background-color: #516BEE; }
+  #paired-stimulus .right {
+    background-color: #E5E243; }
+
+#conjugate-preference iframe, #conjugate-preference .fading {
+  position: absolute;
+  top: 100px;
+  left: calc(50% - 400px); }
+#conjugate-preference iframe {
+  z-index: 1; }
+#conjugate-preference .fading {
+  z-index: 2;
+  width: 800px;
+  height: 450px;
+  transition: opacity 1s ease-in-out;
+  background-color: white; }
+
+#end-of-session {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; }
+  #end-of-session h1 {
+    margin-bottom: 48px; }
+
+/*# sourceMappingURL=style.css.map */

@@ -1,0 +1,18 @@
+Admin logs in, choses view data or start session, enters participant ID
+Group of buttons counts for yellow or blue
+
+What data is being recorded
+	Rate of Response (for conjugate)
+	Number of Responses
+	Which 2 videos, which was selected (for pair)
+
+Fade to white or blur
+	Fade to white
+
+Timeframe
+	Start recording data beginning of February
+
+Questions:
+	How do we know when to go from sample to selection in paired?
+	Can paired expand to full screen, or do we still need the border?
+	
