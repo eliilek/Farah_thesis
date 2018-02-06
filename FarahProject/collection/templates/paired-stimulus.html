@@ -5,19 +5,34 @@
   <meta charset="utf-8" />
   <title>Start</title>
   <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
   {% load static %}
   <link rel="stylesheet" type="text/css" href="{% static "collection/reset.css" %}" />
   <link rel="stylesheet" type="text/css" href="{% static "collection/style.css" %}" />
+  <script>
+    var pairs = JSON.parse('{{ pairs }}');
+    var responses;
+
+    function end_trial(){
+      report_url = "{% url 'paired-report' %}";
+      post(report_url, responses);
+      $(location).attr('href', "{% url 'index' %}");
+    }
+  </script>
+  <script src="{% static 'collection/paired.js' %}" type="text/javascript"></script>
 </head>
+
+<!-- https://www.youtube.com/embed/Jg7ZVkTH4PY?rel=0&amp;controls=0&amp;showinfo=0
+<iframe width="560" height="315" src="" frameborder="0"
+  allow="autoplay; encrypted-media" allowfullscreen></iframe>
+-->
 
 <body id="paired-stimulus">
   <div class="left">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/RuOwsy4GbLc?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"
-      allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div id="left_player"></div>
   </div>
   <div class="right">
-    <iframe width="560" height="315" src="https://www.youtube.com/embed/Jg7ZVkTH4PY?rel=0&amp;controls=0&amp;showinfo=0" frameborder="0"
-      allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    <div id="right_player"></div>
   </div>
 </body>
 
