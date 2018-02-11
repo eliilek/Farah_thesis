@@ -16,7 +16,7 @@
     function end_trial(){
       report_url = "{% url 'paired-report' %}";
       post(report_url, responses);
-      $(location).attr('href', "{% url 'index' %}");
+      $(location).attr('href', "{% url 'end-session' %}");
     }
   </script>
   <script src="{% static 'collection/conjugate.js' %}" type="text/javascript"></script>
