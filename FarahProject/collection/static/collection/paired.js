@@ -121,10 +121,6 @@ function key_input(e){
       responses[index]['video_selected'] = false;
       //In 30 seconds, reset flags, switch to next index
       active_timeout = setTimeout(function(){
-        $(".left").width("50vw");
-        $(".right").show();
-        $("#left_player").height("");
-        $("#left_player").width("");
         //Document.exitFullscreen();
         next_video();
       }, 30000);
@@ -167,10 +163,6 @@ function key_input(e){
       responses[index]['video_selected'] = true;
       //In 30 seconds, reset flags, switch to next index
       active_timeout = setTimeout(function(){
-        $(".right").width("50vw");
-        $(".left").show();
-        $("#right_player").height("");
-        $("#right_player").width("");
         //Document.exitFullscreen();
         next_video();
       }, 30000);
@@ -262,6 +254,14 @@ function next_video(){
     left_player.nextVideo();
     right_player.nextVideo();
   }
+  $(".right").width("50vw");
+  $(".left").show();
+  $("#right_player").height("");
+  $("#right_player").width("");
+  $(".left").width("50vw");
+  $(".right").show();
+  $("#left_player").height("");
+  $("#left_player").width("");
   accepting_keys = true;
   active = null;
   left_sample = false;
