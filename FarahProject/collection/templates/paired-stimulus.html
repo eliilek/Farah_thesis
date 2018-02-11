@@ -11,12 +11,12 @@
   <link rel="stylesheet" type="text/css" href="{% static "collection/style.css" %}" />
   <script>
     var pairs = JSON.parse('{{ pairs }}');
-    var responses;
+    var responses = {0:{}};
 
     function end_trial(){
       report_url = "{% url 'paired-report' %}";
       post(report_url, responses);
-      $(location).attr('href', "{% url 'index' %}");
+      $(location).attr('href', "{% url 'end-session' %}");
     }
   </script>
   <script src="{% static 'collection/paired.js' %}" type="text/javascript"></script>

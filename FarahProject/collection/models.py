@@ -67,8 +67,8 @@ class ConjugateStimulusResultsBlock(models.Model):
 class ConjugateStimulusResult(models.Model):
     block = models.ForeignKey(ConjugateStimulusResultsBlock, on_delete=models.CASCADE)
     video = models.ForeignKey(Stimulus, on_delete=models.CASCADE)
-    response_number = models.PositiveSmallIntegerField()
-    play_time = models.DurationField()
+    response_number = models.PositiveSmallIntegerField(null=True)
+    play_time = models.DurationField(null=True)
 
     def response_rate(self):
         return self.response_number/self.play_time.seconds

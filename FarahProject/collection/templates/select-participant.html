@@ -15,7 +15,7 @@
   <div class="participant-list">
     {% if participants %}
       {% for pid in participants %}
-      <a href="#" class="button">Participant {{ pid }}</a>
+      <a href="{% url 'download-results' pid.subject_id %}" class="button">Participant {{ pid.subject_id }}</a>
       {% endfor %}
     {% else %}
       No participants have data yet

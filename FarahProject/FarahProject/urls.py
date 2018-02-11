@@ -22,10 +22,12 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^start-session', views.start, name='start'),
     url(r'^select-participant', views.select, name='select'),
-    url(r'^select-assessment-session', views.select_type, name='select_type'),
-    url(r'^selection-redirect', views.selection_redirect, name='selection_redirect'),
-    url(r'^paired-report', views.report_paired_results, name='paired_report'),
-    url(r'^conjugate-report', views.report_conjugate_results, name='conjugate_report'),
+    url(r'^select-assessment-session', views.select_type, name='select-type'),
+    url(r'^selection-redirect', views.selection_redirect, name='selection-redirect'),
+    url(r'^paired-report', views.report_paired_results, name='paired-report'),
+    url(r'^conjugate-report', views.report_conjugate_results, name='conjugate-report'),
+    url(r'^download_results/(?P<user_id>[a-zA-Z0-9]+)/', views.download_results, name='download-results'),
+    url(r'^end-sesssion', views.end_session, name='end-session'),
     url(r'^$', views.index, name='index'),
 ]
 
