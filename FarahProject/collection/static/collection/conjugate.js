@@ -35,6 +35,7 @@ var player;
 
 var active_timeout;
 var timeout_start;
+var event_index = 0;
 var accepting_keys = true;
 var remaining;
 
@@ -45,6 +46,8 @@ var started = false;
 
 var var_opacity = 0;
 
+var playlist = [];
+
 //Load the IFrame Player API
 var tag = document.createElement('script');
 tag.src = "https://www.youtube.com/iframe_api";
@@ -52,7 +55,6 @@ var firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 function onYouTubeIframeAPIReady(){
-  var playlist = [];
   console.log(videos);
   playlist.push(videos['Second']['video_id']);
   playlist.push(videos['Third']['video_id']);
@@ -111,13 +113,17 @@ function key_input(e){
       if (active_timeout){
         window.clearTimeout(active_timeout);
       }
+      if (active_interval){
+        window.clearInterval(active_interval);
+      }
       responses[index]['video'] = videos[str_index]['id'];
       next_video();
     }
   } else if (e.keyCode == 32 && accepting_keys) {
     if (started){
       //Record response
-      responses[index]['response_number'] += 1;
+      responses[index]['events'][event_index] = Date.now()-timeout_start;
+      event_index++;
       //Increase volume, clarity if not full
       var_opacity = Math.max(var_opacity-0.1, 0);
       $(".fading").css("opacity", var_opacity);
@@ -129,7 +135,7 @@ function key_input(e){
       started = true;
       accepting_keys = false;
       player.playVideo();
-      setTimeout(function(){
+      active_timeout = setTimeout(function(){
         beep();
         accepting_keys = true;
         active_timeout = setTimeout(collection, 120000);
@@ -149,21 +155,26 @@ function collection(){
 
 function next_video(){
   index++;
-  if (index == 1){
-    str_index = "Second";
-  } else if (index == 2){
-    str_index = "Third";
-  } else {
-    str_index = "Fourth";
-  }
+  clearInterval(active_interval);
   if (index >= Object.keys(videos).length){
     //AJAX back the data and end
     end_trial();
   }
+  if (index == 1){
+    str_index = "Second";
+    player.loadPlaylist(playlist);
+  } else if (index == 2){
+    str_index = "Third";
+    player.nextVideo();
+  } else {
+    str_index = "Fourth";
+    player.nextVideo();
+  }
   accepting_keys = false;
-  responses[index] = {'response_number':0};
-  player.nextVideo();
+  responses[index] = {'events':{}}
+  event_index = 0;
   $(".fading").css("opacity", 0);
+  var_opacity = 0;
   player.setVolume(100);
   player.seekTo(videos[str_index]['start_time']);
   just_loaded = 1;
@@ -176,7 +187,7 @@ function onPlayerReady(event){
 
 function onStateChange(event){
   if (event.data == 1 && just_loaded > 0){
-    setTimeout(function(){
+    active_timeout = setTimeout(function(){
       beep();
       accepting_keys = true;
       active_timeout = setTimeout(collection, 120000);
@@ -194,9 +205,7 @@ function onStateChange(event){
 }
 
 function fading(){
-  console.log("Um?");
   var_opacity = Math.min(var_opacity+0.1, 1);
   $(".fading").css("opacity", var_opacity);
-  console.log($(".fading").css("opacity"));
   player.setVolume(Math.max(player.getVolume()-10, 0));
 }

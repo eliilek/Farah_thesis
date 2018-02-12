@@ -11,10 +11,10 @@
   <link rel="stylesheet" type="text/css" href="{% static "collection/style.css" %}" />
   <script>
     var videos = JSON.parse('{{ videos }}');
-    var responses = {0:{}};
+    var responses = {0:{'events':{}}};
 
     function end_trial(){
-      report_url = "{% url 'paired-report' %}";
+      report_url = "{% url 'conjugate-report' %}";
       post(report_url, responses);
       $(location).attr('href', "{% url 'end-session' %}");
     }

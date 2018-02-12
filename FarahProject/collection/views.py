@@ -20,7 +20,7 @@ def start(request):
 
 def select(request):
     #Pull participant id for each participant with data
-    participants = Subject.objects.filter(Q(pairedstimulusresultsblock__completed=True)|Q(conjugatestimulusresultsblock__completed=True))
+    participants = Subject.objects.filter(Q(pairedstimulusresultsblock__completed=True)|Q(conjugatestimulusresultsblock__completed=True)).distinct()
     return render(request, 'select-participant.html', {'participants':participants})
 
 def download_results(request, user_id):
@@ -29,13 +29,36 @@ def download_results(request, user_id):
     response['Content-Disposition'] = 'attachment; filename="user_' + str(user_id) + '_data.csv"'
     try:
         user = Subject.objects.get(subject_id=user_id)
-        paired_data_set = PairedStimulusResultsBlock.objects.filter(subject=user).filter(completed=True)
-        conjugate_data_set = ConjugateStimulusResultsBlock.objets.filter(subject=user).filter(completed=True)
+        paired_data_set = PairedStimulusResultsBlock.objects.filter(subject=user).filter(completed=True).order_by('created')
+        conjugate_data_set = ConjugateStimulusResultsBlock.objects.filter(subject=user).filter(completed=True).order_by('created')
     except Exception as e:
+        print "Download Results: "
         print(e)
 
-    #writer = csv.writer(response)
-    #writer.writerow(['First row', 'Foo', 'Bar', 'Baz'])
+    writer = csv.writer(response)
+    writer.writerow(['Paired Choice',])
+    for block in paired_data_set:
+        writer.writerow(['Date:', block.created.strftime("%b %d, %Y")])
+        results = block.pairedstimulusresult_set.order_by("trial")
+        writer.writerow(['', 'Trial', 'Stimulus Selected', 'L/R'])
+        for result in results:
+            if result.video_selected == None:
+                writer.writerow(['', result.trial, 'None', 'Skipped'])
+            else:
+                writer.writerow(['', result.trial, (result.video_right if result.video_selected else result.video_left), ("Right" if result.video_selected else "Left")])
+    writer.writerow(['',])
+    writer.writerow(['Conjugate',])
+    print conjugate_data_set
+    for block in conjugate_data_set:
+        print block
+        writer.writerow(['Date:', block.created.strftime("%b %d, %Y")])
+        writer.writerow(['Session Number:', block.session_number])
+        results = block.conjugatestimulusresult_set.order_by("trial")
+        writer.writerow(['', 'Trial', 'Time of click (ms)'])
+        for result in results:
+            writer.writerow(['', result.trial])
+            for event in result.conjugateresponse_set.order_by("event_time"):
+                writer.writerow(['', '', event.event_time])
 
     return response
 
@@ -91,38 +114,32 @@ def selection_redirect(request):
         pairs.append({'left':{'video_id':stimuli[3].video_id, 'start_time':stimuli[3].start_time, 'id':stimuli[3].id},
         'right':{'video_id':stimuli[2].video_id, 'start_time':stimuli[2].start_time, 'id':stimuli[2].id}})
         random.shuffle(pairs)
-        for pair in pairs:
-            print pair['left']
-            print pair['right']
         return render(request, 'paired-stimulus.html', {'pairs':mark_safe(json.dumps(pairs))})
     else:
         results_block = ConjugateStimulusResultsBlock(subject=sub, session_number=request.POST['session_number'])
         results_block.save()
         request.session['active_response_block'] = results_block.id
         videos = {}
-        print request.POST['session_number']
         if request.POST['session_number'] == "1":
-            print "one"
             videos['First'] = {'video_id':stimuli[0].video_id, 'id':stimuli[0].id, 'start_time':stimuli[0].start_time}
             videos['Second'] = {'video_id':stimuli[1].video_id, 'id':stimuli[1].id, 'start_time':stimuli[1].start_time}
             videos['Third'] = {'video_id':stimuli[2].video_id, 'id':stimuli[2].id, 'start_time':stimuli[2].start_time}
             videos['Fourth'] = {'video_id':stimuli[3].video_id, 'id':stimuli[3].id, 'start_time':stimuli[3].start_time}
-        elif request.POST['session_number'] == 2:
+        elif request.POST['session_number'] == "2":
             videos['First'] = {'video_id':stimuli[3].video_id, 'id':stimuli[3].id, 'start_time':stimuli[3].start_time}
             videos['Second'] = {'video_id':stimuli[2].video_id, 'id':stimuli[2].id, 'start_time':stimuli[2].start_time}
             videos['Third'] = {'video_id':stimuli[1].video_id, 'id':stimuli[1].id, 'start_time':stimuli[1].start_time}
             videos['Fourth'] = {'video_id':stimuli[0].video_id, 'id':stimuli[0].id, 'start_time':stimuli[0].start_time}
-        elif request.POST['session_number'] == 3:
+        elif request.POST['session_number'] == "3":
             videos['First'] = {'video_id':stimuli[1].video_id, 'id':stimuli[1].id, 'start_time':stimuli[1].start_time}
             videos['Second'] = {'video_id':stimuli[3].video_id, 'id':stimuli[3].id, 'start_time':stimuli[3].start_time}
             videos['Third'] = {'video_id':stimuli[0].video_id, 'id':stimuli[0].id, 'start_time':stimuli[0].start_time}
             videos['Fourth'] = {'video_id':stimuli[2].video_id, 'id':stimuli[2].id, 'start_time':stimuli[2].start_time}
-        elif request.POST['session_number'] == 4:
+        elif request.POST['session_number'] == "4":
             videos['First'] = {'video_id':stimuli[2].video_id, 'id':stimuli[2].id, 'start_time':stimuli[2].start_time}
             videos['Second'] = {'video_id':stimuli[0].video_id, 'id':stimuli[0].id, 'start_time':stimuli[0].start_time}
             videos['Third'] = {'video_id':stimuli[3].video_id, 'id':stimuli[3].id, 'start_time':stimuli[3].start_time}
             videos['Fourth'] = {'video_id':stimuli[1].video_id, 'id':stimuli[1].id, 'start_time':stimuli[1].start_time}
-        print videos
         return render(request, 'conjugate-preference.html', {'videos':mark_safe(json.dumps(videos))})
 
     return HttpResponse("Something has gone horribly wrong if you're reading this")
@@ -136,16 +153,20 @@ def report_paired_results(request):
             block = PairedStimulusResultsBlock.objects.get(id=request.session['active_response_block'])
             block.save()
             paired_response = PairedStimulusResult(
+                trial = int(response),
                 block = block,
                 video_left = Stimulus.objects.get(id=json_object[response]['video_left']),
                 video_right = Stimulus.objects.get(id=json_object[response]['video_right'])
             )
             if 'video_selected' in json_object[response].keys():
                 paired_response.video_selected = json_object[response]['video_selected']
+            else:
+                paired_response.video_selected = None
             paired_response.save()
         except Exception as e:
+            print "Paired Results:"
             print(e)
-    block.completed = True;
+    block.completed = True
     block.save()
     request.session.pop('active_response_block')
     return HttpResponse("You shouldn't see this message")
@@ -158,16 +179,26 @@ def report_conjugate_results(request):
         try:
             block = ConjugateStimulusResultsBlock.objects.get(id=request.session['active_response_block'])
             block.save()
-            conjugate_response = ConjugateStimulusResult(
+            conjugate_result = ConjugateStimulusResult(
+                trial = int(response),
                 block = block,
                 video = Stimulus.objects.get(id=json_object[response]['video']),
-                response_number = json_object[response]['response_number'],
                 play_time = datetime.timedelta(seconds=json_object[response]['play_time'])
             )
-            conjugate_response.save()
+            if 'play_time' in json_object[response].keys():
+                conjugate_result.play_time = datetime.timedelta(seconds=json_object[response]['play_time'])
+            else:
+                conjugate_result.play_time = 0
+            conjugate_result.save()
+            for event in json_object[response]['events']:
+                conjugate_response = ConjugateResponse(
+                result = conjugate_result,
+                event_time = datetime.timedelta(milliseconds=json_object[response]['events'][event]))
+                conjugate_response.save()
         except Exception as e:
+            print "Conjugate Results: "
             print(e)
-    block.completed = True;
+    block.completed = True
     block.save()
     request.session.pop('active_response_block')
     return HttpResponse("You shouldn't see this message")

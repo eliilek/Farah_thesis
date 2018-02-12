@@ -15,6 +15,7 @@ class Stimulus(models.Model):
     class Meta:
         verbose_name_plural = "Stimuli"
 
+    name = models.CharField(max_length=500)
     url = models.CharField(max_length=500)
     video_id = models.CharField(max_length=50)
     start_time = models.PositiveSmallIntegerField()
@@ -29,6 +30,9 @@ class Stimulus(models.Model):
         result = re.search('v=(.*)', temp)
         self.video_id = result.group(1)
         return super(Stimulus, self).save(*args, **kwargs)
+
+    def __unicode__(self):
+        return self.name
 
 class PairedStimulusResultsBlock(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE)
@@ -45,6 +49,7 @@ class PairedStimulusResultsBlock(models.Model):
         return self.created
 
 class PairedStimulusResult(models.Model):
+    trial = models.PositiveSmallIntegerField()
     block = models.ForeignKey(PairedStimulusResultsBlock, on_delete=models.CASCADE)
     video_left = models.ForeignKey(Stimulus, on_delete=models.CASCADE, related_name="LeftStimResult")
     video_right = models.ForeignKey(Stimulus, on_delete=models.CASCADE, related_name="RightStimResult")
@@ -65,10 +70,11 @@ class ConjugateStimulusResultsBlock(models.Model):
         return self.created
 
 class ConjugateStimulusResult(models.Model):
+    trial = models.PositiveSmallIntegerField()
     block = models.ForeignKey(ConjugateStimulusResultsBlock, on_delete=models.CASCADE)
     video = models.ForeignKey(Stimulus, on_delete=models.CASCADE)
-    response_number = models.PositiveSmallIntegerField(null=True)
     play_time = models.DurationField(null=True)
 
-    def response_rate(self):
-        return self.response_number/self.play_time.seconds
+class ConjugateResponse(models.Model):
+    result = models.ForeignKey(ConjugateStimulusResult, on_delete=models.CASCADE)
+    event_time = models.DurationField()
