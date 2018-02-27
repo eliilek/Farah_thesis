@@ -13,7 +13,7 @@
 <body id="start-session">
   <h1>Start Experimental Session</h1>
   {% if error %}
-  <h3>{{error}}. Please visit the admin page to correct this.</h3>
+  <div class="error">{{error}}. Please visit the admin page to correct this.</div>
   {% endif %}
   <form action="select-assessment-session" method="post">
     {% csrf_token %}

@@ -21,6 +21,13 @@ h1 {
   font-size: 36px;
   line-height: 48px; }
 
+.error {
+  margin-bottom: 24px;
+  color: red;
+  font-weight: bold;
+
+}
+
 #start {
   display: flex;
   align-items: center;

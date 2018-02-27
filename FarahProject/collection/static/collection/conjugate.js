@@ -84,6 +84,13 @@ function onYouTubeIframeAPIReady(){
 
   // Set keyboard hooks
   $(document).keydown(key_input);
+  $(document).keyup(key_refresh);
+}
+
+function key_refresh(e){
+  if (e.keyCode == 32){
+    accepting_keys = true;
+  }
 }
 
 function key_input(e){
@@ -131,6 +138,7 @@ function key_input(e){
       //Reset interval
       if (active_interval) clearInterval(active_interval);
       active_interval = setInterval(fading, 2000);
+      accepting_keys = false;
     } else {
       started = true;
       accepting_keys = false;
