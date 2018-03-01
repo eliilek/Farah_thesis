@@ -254,6 +254,7 @@ function next_video(){
     left_player.nextVideo();
     right_player.nextVideo();
   }
+  just_loaded = 2;
   $(".right").width("50vw");
   $(".left").show();
   $("#right_player").height("");
@@ -267,7 +268,6 @@ function next_video(){
   left_sample = false;
   right_sample = false;
   responses[index] = {};
-  just_loaded = 2;
 }
 
 function onStateChange(event){
