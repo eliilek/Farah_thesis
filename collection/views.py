@@ -54,9 +54,9 @@ def download_results(request, user_id):
         writer.writerow(['Date:', block.created.strftime("%b %d, %Y")])
         writer.writerow(['Session Number:', block.session_number])
         results = block.conjugatestimulusresult_set.order_by("trial")
-        writer.writerow(['', 'Trial', 'Time of click (ms)'])
+        writer.writerow(['', 'Stimulus', 'Time of click (ms)'])
         for result in results:
-            writer.writerow(['', result.trial])
+            writer.writerow(['', result.video.name])
             for event in result.conjugateresponse_set.order_by("event_time"):
                 writer.writerow(['', '', event.event_time])
 
