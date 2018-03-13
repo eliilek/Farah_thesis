@@ -244,6 +244,7 @@ function onPlayerReady(event){
 }
 
 function next_video(){
+  console.log("Next Video")
   index++;
   if (index >= Object.keys(pairs).length){
     //AJAX back the data and end
