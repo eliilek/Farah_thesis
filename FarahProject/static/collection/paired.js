@@ -274,7 +274,7 @@ function next_video(){
 function onStateChange(event){
   console.log("State Change:");
   console.log(event.data);
-  consoel.log(just_loaded);
+  console.log(just_loaded);
   if (event.data == 1 && just_loaded > 0){
     event.target.pauseVideo();
     if (event.target == left_player){
