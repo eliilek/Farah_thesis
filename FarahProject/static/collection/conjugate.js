@@ -128,11 +128,14 @@ function key_input(e){
     }
   } else if (e.keyCode == 32 && accepting_keys) {
     if (started){
+      console.log("Response");
       //Record response
       responses[index]['events'][event_index] = Date.now()-timeout_start;
+      console.log(Date.now()-timeout_start);
       event_index++;
       //Increase volume, clarity if not full
       var_opacity = Math.max(var_opacity-0.1, 0);
+      console.log(var_opacity);
       $(".fading").css("opacity", var_opacity);
       player.setVolume(Math.min(player.getVolume()+10, 100));
       //Reset interval
@@ -140,6 +143,7 @@ function key_input(e){
       active_interval = setInterval(fading, 2000);
       accepting_keys = false;
     } else {
+      console.log("Start")
       started = true;
       accepting_keys = false;
       player.playVideo();
@@ -186,6 +190,8 @@ function next_video(){
   player.setVolume(100);
   player.seekTo(videos[str_index]['start_time']);
   just_loaded = 1;
+  console.log("Start Time:");
+  console.log(videos[str_index]['start_time'])
 }
 
 function onPlayerReady(event){
@@ -195,6 +201,7 @@ function onPlayerReady(event){
 
 function onStateChange(event){
   if (event.data == 1 && just_loaded > 0){
+    console.log("Begin sample")
     active_timeout = setTimeout(function(){
       beep();
       accepting_keys = true;
@@ -204,16 +211,20 @@ function onStateChange(event){
     }, 3000);
     just_loaded--;
   } else if (event.data == 1 && just_loaded < 0){
+    console.log("First load")
     player.pauseVideo();
     just_loaded++;
   } else if (event.data == 5){
+    console.log("Cue visual")
     event.target.playVideo();
     event.target.pauseVideo();
   }
 }
 
 function fading(){
+  console.log("Fade")
   var_opacity = Math.min(var_opacity+0.1, 1);
   $(".fading").css("opacity", var_opacity);
   player.setVolume(Math.max(player.getVolume()-10, 0));
+  console.log(var_opacity)
 }

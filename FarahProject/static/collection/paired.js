@@ -94,7 +94,7 @@ function key_input(e){
       //In 3 seconds, enable non-control keys
       setTimeout(function(){
         accepting_keys = true;
-        console.log("Left");
+        console.log("Left sample");
         left_player.pauseVideo();
         left_player.seekTo(pairs[index]['left']['start_time']);
       }, 3000);
@@ -137,7 +137,7 @@ function key_input(e){
       //In 3 seconds, rehook keypress
       setTimeout(function(){
         accepting_keys = true;
-        console.log("Right")
+        console.log("Right sample")
         right_player.pauseVideo();
         right_player.seekTo(pairs[index]['right']['start_time']);
       }, 3000);
@@ -158,6 +158,7 @@ function key_input(e){
       //  requestFullScreen.bind(playerElement)();
       //}
       //Store selection
+      console.log(pairs[index]['right']['id'])
       responses[index]['video_left'] = pairs[index]['left']['id'];
       responses[index]['video_right'] = pairs[index]['right']['id'];
       responses[index]['video_selected'] = true;
@@ -271,16 +272,22 @@ function next_video(){
 }
 
 function onStateChange(event){
+  console.log("State Change:");
+  console.log(event.data);
+  consoel.log(just_loaded);
   if (event.data == 1 && just_loaded > 0){
     event.target.pauseVideo();
     if (event.target == left_player){
+      console.log("Left setup")
       left_player.seekTo(pairs[index]['left']['start_time']);
     } else {
+      console.log("Right setup")
       right_player.seekTo(pairs[index]['right']['start_time']);
     }
     just_loaded--;
   }
   else if (event.data == 5){
+    console.log("Play from cue")
     event.target.playVideo();
   }
 }
