@@ -43,7 +43,7 @@ def download_results(request, user_id):
         writer.writerow(['', 'Trial', 'Stimulus Selected', 'L/R'])
         for result in results:
             if result.video_selected == None:
-                writer.writerow(['', result.trial, 'None', 'Skipped'])
+                writer.writerow(['', result.trial + 1, 'None', 'Skipped'])
             else:
                 writer.writerow(['', result.trial, (result.video_right if result.video_selected else result.video_left), ("Right" if result.video_selected else "Left")])
     writer.writerow(['',])
