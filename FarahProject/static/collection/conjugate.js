@@ -195,11 +195,7 @@ function next_video(){
 }
 
 function onPlayerReady(event){
-  console.log("Player Ready");
   event.target.seekTo(videos[str_index]['start_time']);
-  player.seekTo(videos[str_index]['start_time']);
-  console.log(event.target);
-  console.log(videos[str_index]['start_time']);
   just_loaded = -1;
 }
 
@@ -217,6 +213,7 @@ function onStateChange(event){
   } else if (event.data == 1 && just_loaded < 0){
     console.log("First load")
     player.pauseVideo();
+    player.seekTo(videos[str_index]['start_time']);
     just_loaded++;
   } else if (event.data == 5){
     console.log("Cue visual")
