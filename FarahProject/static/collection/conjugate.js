@@ -195,8 +195,9 @@ function next_video(){
 }
 
 function onPlayerReady(event){
-  console.log("Player Ready")
+  console.log("Player Ready");
   event.target.seekTo(videos[str_index]['start_time']);
+  console.log(event.target);
   console.log(videos[str_index]['start_time']);
   just_loaded = -1;
 }
