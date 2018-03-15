@@ -39,7 +39,8 @@ var timeout_start;
 var remaining;
 
 var active = null;
-var just_loaded = 0;
+var left_loaded = 0;
+var right_loaded = 0;
 
 var left_keys = [81, 87, 69, 65, 83, 68, 90, 88, 67];
 var right_keys = [73, 79, 80, 75, 76, 186, 188, 190, 191];
@@ -94,7 +95,6 @@ function key_input(e){
       //In 3 seconds, enable non-control keys
       setTimeout(function(){
         accepting_keys = true;
-        console.log("Left sample");
         left_player.pauseVideo();
         left_player.seekTo(pairs[index]['left']['start_time']);
       }, 3000);
@@ -115,7 +115,6 @@ function key_input(e){
       //  requestFullScreen.bind(playerElement)();
       //}
       //Store selection
-      console.log(pairs[index]['left']['id'])
       responses[index]['video_left'] = pairs[index]['left']['id'];
       responses[index]['video_right'] = pairs[index]['right']['id'];
       responses[index]['video_selected'] = false;
@@ -137,7 +136,6 @@ function key_input(e){
       //In 3 seconds, rehook keypress
       setTimeout(function(){
         accepting_keys = true;
-        console.log("Right sample")
         right_player.pauseVideo();
         right_player.seekTo(pairs[index]['right']['start_time']);
       }, 3000);
@@ -158,7 +156,6 @@ function key_input(e){
       //  requestFullScreen.bind(playerElement)();
       //}
       //Store selection
-      console.log(pairs[index]['right']['id'])
       responses[index]['video_left'] = pairs[index]['left']['id'];
       responses[index]['video_right'] = pairs[index]['right']['id'];
       responses[index]['video_selected'] = true;
@@ -179,13 +176,10 @@ var right_playlist;
 function onYouTubeIframeAPIReady(){
   left_playlist = [];
   right_playlist = [];
-  console.log(pairs);
   for (var i = 1; i < Object.keys(pairs).length; i++) {
     left_playlist.push(pairs[i]['left']['video_id']);
     right_playlist.push(pairs[i]['right']['video_id']);
   }
-  console.log(left_playlist);
-  console.log(right_playlist);
   //Create iframes
   left_player = new YT.Player('left_player', {
     height: '315',
@@ -235,16 +229,15 @@ function onYouTubeIframeAPIReady(){
 function onPlayerReady(event){
   if (event.target == left_player){
     event.target.seekTo(pairs[index]['left']['start_time']);
-    just_loaded++;
+    left_loaded++;
   } else if (event.target == right_player){
     event.target.seekTo(pairs[index]['right']['start_time']);
-    just_loaded++;
+    right_loaded++;
   }
   event.target.setShuffle(false);
 }
 
 function next_video(){
-  console.log("Next Video")
   index++;
   if (index >= Object.keys(pairs).length){
     //AJAX back the data and end
@@ -256,7 +249,8 @@ function next_video(){
     left_player.nextVideo();
     right_player.nextVideo();
   }
-  just_loaded = 2;
+  left_loaded = 1;
+  right_loaded = 1;
   $(".right").width("50vw");
   $(".left").show();
   $("#right_player").height("");
@@ -273,22 +267,17 @@ function next_video(){
 }
 
 function onStateChange(event){
-  console.log("State Change:");
-  console.log(event.data);
-  console.log(just_loaded);
-  if (event.data == 1 && just_loaded > 0){
-    event.target.pauseVideo();
-    if (event.target == left_player){
-      console.log("Left setup")
+  if (event.data == 1){
+    if (left_loaded > 0 && event.target == left_player){
+      event.target.pauseVideo();
       left_player.seekTo(pairs[index]['left']['start_time']);
-    } else {
-      console.log("Right setup")
+      left_loaded--;
+    } else if (right_loaded > 0 && event.target == right_player){
+      event.target.pauseVideo();
       right_player.seekTo(pairs[index]['right']['start_time']);
+      right_loaded--;
     }
-    just_loaded--;
-  }
-  else if (event.data == 5){
-    console.log("Play from cue")
+  } else if (event.data == 5){
     event.target.playVideo();
   }
 }
