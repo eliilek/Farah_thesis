@@ -200,6 +200,13 @@ function onPlayerReady(event){
 }
 
 function onStateChange(event){
+  try {
+    window.clearTimeout(active_timeout);
+    window.clearInterval(active_interval);
+  }
+  catch(err) {
+    console.log(err);
+  }
   if (event.data == 1 && just_loaded > 0){
     player.seekTo(videos[str_index]['start_time']);
     console.log("Begin sample")
