@@ -201,14 +201,6 @@ function onPlayerReady(event){
 
 function onStateChange(event){
   if (event.data == 1 && just_loaded > 0){
-    try {
-      console.log("Clearing");
-      window.clearTimeout(active_timeout);
-      window.clearInterval(active_interval);
-    }
-    catch(err) {
-      console.log(err);
-    }
     player.seekTo(videos[str_index]['start_time']);
     console.log("Begin sample")
     active_timeout = setTimeout(function(){

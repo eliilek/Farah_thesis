@@ -39,8 +39,9 @@ var timeout_start;
 var remaining;
 
 var active = null;
-var left_loaded = 0;
-var right_loaded = 0;
+
+var left_playing = 0;
+var right_playing = 0;
 
 var left_keys = [81, 87, 69, 65, 83, 68, 90, 88, 67];
 var right_keys = [73, 79, 80, 75, 76, 186, 188, 190, 191];
@@ -65,6 +66,11 @@ function key_input(e){
             remaining = 30000 - (Date.now() - timeout_start)
           }
         } else if (active.getPlayerState() == 2){
+          if (active == left_player){
+            left_playing = 1;
+          } else {
+            right_playing = 1;
+          }
           active.playVideo();
           active_timeout = setTimeout(function(){
             accepting_keys = true;
@@ -90,6 +96,7 @@ function key_input(e){
       //Disable non-control keys
       accepting_keys = false;
       left_sample = true;
+      left_playing = 1;
       //Play video for 3 seconds
       left_player.playVideo();
       //In 3 seconds, enable non-control keys
@@ -102,6 +109,7 @@ function key_input(e){
       //Select left video, play for 30 sec in fullscreen
       active = left_player;
       accepting_keys = false;
+      left_playing = 1;
       left_player.playVideo();
       var frame = $("#left_player");
       $(".left").width("100vw");
@@ -132,6 +140,7 @@ function key_input(e){
       accepting_keys = false;
       right_sample = true;
       //Play video for 3 seconds
+      right_playing = 1;
       right_player.playVideo();
       //In 3 seconds, rehook keypress
       setTimeout(function(){
@@ -143,6 +152,7 @@ function key_input(e){
       //Select right video, play for 30 sec in fullscreen
       active = right_player;
       accepting_keys = false;
+      right_playing = 1;
       right_player.playVideo();
       var frame = $("#right_player");
       $(".right").width("100vw");
@@ -229,10 +239,8 @@ function onYouTubeIframeAPIReady(){
 function onPlayerReady(event){
   if (event.target == left_player){
     event.target.seekTo(pairs[index]['left']['start_time']);
-    left_loaded++;
   } else if (event.target == right_player){
     event.target.seekTo(pairs[index]['right']['start_time']);
-    right_loaded++;
   }
   event.target.setShuffle(false);
 }
@@ -249,8 +257,6 @@ function next_video(){
     left_player.nextVideo();
     right_player.nextVideo();
   }
-  left_loaded = 1;
-  right_loaded = 1;
   $(".right").width("50vw");
   $(".left").show();
   $("#right_player").height("");
@@ -268,14 +274,17 @@ function next_video(){
 
 function onStateChange(event){
   if (event.data == 1){
-    if (left_loaded > 0 && event.target == left_player){
+    if (left_playing == 1 && event.target == left_player){
+      left_playing = 0;
+    } else if (right_playing == 1 && event.target == right_player){
+      right_playing = 0;
+    } else {
       event.target.pauseVideo();
-      left_player.seekTo(pairs[index]['left']['start_time']);
-      left_loaded--;
-    } else if (right_loaded > 0 && event.target == right_player){
-      event.target.pauseVideo();
-      right_player.seekTo(pairs[index]['right']['start_time']);
-      right_loaded--;
+      if (event.target == left_player){
+        left_player.seekTo(pairs[index]['left']['start_time']);
+      } else {
+        right_player.seekTo(pairs[index]['right']['start_time']);
+      }
     }
   } else if (event.data == 5){
     event.target.playVideo();
